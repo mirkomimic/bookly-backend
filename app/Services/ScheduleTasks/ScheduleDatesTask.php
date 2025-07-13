@@ -29,9 +29,13 @@ class ScheduleDatesTask
 
     $lastDate = Schedule::max('date');
 
-    $newDay = $lastDate
-      ? date('Y-m-d', strtotime($lastDate . ' +1 day'))
-      : date('Y-m-d');
+    $newDay = $lastDate ? Carbon::parse($lastDate)->addDay() : Carbon::today();
+
+    while ($newDay->isWeekend()) {
+      $newDay->addDay();
+    }
+
+    $newDayFormatted = $newDay->toDateString();
 
     for ($j = 0; $j < $numberOfAppointments; $j++) {
       if ($j !== 0) {
@@ -39,7 +43,7 @@ class ScheduleDatesTask
       }
 
       $schedule = new Schedule();
-      $schedule->date = $newDay;
+      $schedule->date = $newDayFormatted;
       $schedule->start_time = $startTime;
       $schedule->is_available = true;
       $schedule->user_id = null;

@@ -9,9 +9,8 @@ Artisan::command('inspire', function () {
   $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-Schedule::call(new ScheduleDatesTask)->daily();
-// Schedule::call(new ScheduleDatesTask)->everyMinute();
+Schedule::call(new ScheduleDatesTask)->dailyAt('00:00')->name('schedule.addNewDayAndDeleteOldDays');
 
 Schedule::call(function () {
   ScheduleDatesTask::disableOldAppointments();
-})->everyThirtyMinutes();
+})->everyThirtyMinutes()->name('schedule.disableOldAppointments');
